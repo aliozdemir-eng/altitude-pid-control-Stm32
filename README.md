@@ -146,8 +146,18 @@ The following figure shows the closed-loop altitude response obtained from MATLA
 ![Closed Loop Response](results/closed_loop_response.png)
 
 Key performance metrics are provided in `results/metrics.txt`.
----
 
+---
+## MATLAB Closed-Loop Validation
+
+The figure below shows the closed-loop altitude response obtained from MATLAB validation.
+
+![Closed-Loop Response](results/closed_loop_response.png)
+
+Step response metrics can be found in:
+`results/metrics.txt`
+
+---
 ## How to Run (Local / Codespaces)
 
 > Repository is structured as a Python package (`sim/`).
