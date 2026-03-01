@@ -1,10 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from plant import VerticalPlant
-from controller import PIDController
-from sensor import AltitudeSensor
-
+from sim.plant import VerticalPlant
+from sim.controller import PIDController
+from sim.sensor import AltitudeSensor
 
 def run_simulation():
 
