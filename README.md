@@ -139,6 +139,55 @@ This project demonstrates foundational principles applicable to:
 - Aerospace control prototyping
 
 ---
+---
+
+## How to Run (Local / Codespaces)
+
+> Repository is structured as a Python package (`sim/`).
+
+```bash
+pip install numpy matplotlib
+python -m sim.main
+```
+
+---
+
+## Repository Structure
+
+```text
+sim/
+ ├── __init__.py      # package marker
+ ├── main.py          # entry point (simulation runner)
+ ├── plant.py         # nonlinear vertical dynamics model
+ ├── controller.py    # discrete-time PID (anti-windup, saturation, feedforward)
+ ├── sensor.py        # noise + low-pass filtering sensor model
+ └── metrics.py       # step response metrics (overshoot, settling time, SSE)
+```
+
+---
+
+## Key Engineering Features
+
+- Fixed-step discrete-time loop (Ts = 10 ms)
+- Nonlinear vertical plant model (gravity + aerodynamic drag)
+- Actuator saturation limits
+- Integral anti-windup protection
+- Gravity feedforward compensation
+- Sensor noise modeling (Gaussian)
+- First-order low-pass filtering
+- Step response performance metrics (Overshoot, Settling Time, SSE)
+
+---
+
+## Performance Evaluation
+
+The simulation automatically computes:
+
+- **Overshoot (%)**
+- **Settling Time (2% band)**
+- **Steady-State Error (m)**
+
+Metrics are calculated in `sim/metrics.py` and printed to console during simulation.
 
 ## Keywords
 
