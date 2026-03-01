@@ -229,42 +229,7 @@ Implemented controller features:
 - Output saturation: `u ∈ [0, 1]`
 - Gravity feedforward: `u_ff = g / k_u`
 
----
 
-## Closed-Loop Architecture
-
-```text
-            +------------------+
-            |  Reference r[k]  |
-            +--------+---------+
-                     |
-                     v
-            +------------------+
-            | PID Controller   |
-            | (anti-windup,    |
-            | sat., u_ff)      |
-            +--------+---------+
-                     |
-                  u[k] (0..1)
-                     |
-                     v
-            +------------------+
-            | Plant Dynamics   |
-            | (h, v states)    |
-            +--------+---------+
-                     |
-                  h_true
-                     |
-                     v
-            +------------------+
-            | Sensor Model     |
-            | noise + LPF      |
-            +--------+---------+
-                     |
-                  y[k] (meas)
-                     |
-                     +------------- feedback -------------> to controller
-```
 
 ---
 
