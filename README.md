@@ -191,79 +191,92 @@ Metrics are calculated in `sim/metrics.py` and printed to console during simulat
 
 ---
 
-## System Mathematical Model
+## System Mathematical Model 
 
-The vertical motion dynamics are modeled as:
+### Continuous-time plant model (vertical axis)
 
-\[
-\dot{h} = v
-\]
+State definitions:
+- `h(t)` : altitude [m]
+- `v(t)` : vertical velocity [m/s]
 
-\[
-\dot{v} = k_u u - g - k_d v |v|
-\]
+Dynamics:
+
+```text
+h_dot = v
+v_dot = k_u * u - g - k_d * v * |v|
+```
 
 Where:
+- `u`   : normalized thrust command (0..1)
+- `g`   : gravitational acceleration (9.81 m/s^2)
+- `k_u` : thrust effectiveness gain
+- `k_d` : nonlinear aerodynamic drag coefficient
 
-- \( h \) → altitude (m)  
-- \( v \) → vertical velocity (m/s)  
-- \( u \) → normalized thrust input  
-- \( g \) → gravitational acceleration (9.81 m/s²)  
-- \( k_u \) → thrust gain  
-- \( k_d \) → nonlinear aerodynamic drag coefficient  
+### Discrete-time PID controller (Ts-fixed)
 
-The controller operates in discrete-time:
+Error:
+```text
+e[k] = r[k] - y[k]
+```
 
-\[
-u[k] = K_p e[k] + K_i \sum e[k]T_s + K_d \frac{e[k] - e[k-1]}{T_s} + u_{ff}
-\]
+Control law:
+```text
+u[k] = Kp*e[k] + Ki*Σ(e[k]*Ts) + Kd*(e[k]-e[k-1])/Ts + u_ff
+```
 
-with:
-
-- Integral anti-windup clamping  
-- Output saturation limits  
-- Gravity feedforward compensation  
+Implemented controller features:
+- Integral clamping (anti-windup)
+- Output saturation: `u ∈ [0, 1]`
+- Gravity feedforward: `u_ff = g / k_u`
 
 ---
 
 ## Closed-Loop Architecture
 
 ```text
-        +-------------+
-        |  Setpoint   |
-        +------+------+ 
-               |
-               v
-        +-------------+
-        |   PID       |
-        | Controller  |
-        +------+------+ 
-               |
-               v
-        +-------------+
-        |   Plant     |
-        | Vertical    |
-        | Dynamics    |
-        +------+------+ 
-               |
-               v
-        +-------------+
-        |   Sensor    |
-        | Noise + LPF |
-        +------+------+ 
-               |
-               +-------------------- feedback -------------------+
+            +------------------+
+            |  Reference r[k]  |
+            +--------+---------+
+                     |
+                     v
+            +------------------+
+            | PID Controller   |
+            | (anti-windup,    |
+            | sat., u_ff)      |
+            +--------+---------+
+                     |
+                  u[k] (0..1)
+                     |
+                     v
+            +------------------+
+            | Plant Dynamics   |
+            | (h, v states)    |
+            +--------+---------+
+                     |
+                  h_true
+                     |
+                     v
+            +------------------+
+            | Sensor Model     |
+            | noise + LPF      |
+            +--------+---------+
+                     |
+                  y[k] (meas)
+                     |
+                     +------------- feedback -------------> to controller
 ```
 
 ---
 
 ## Control Design Notes
 
-- Sampling Time: **Ts = 10 ms**
-- Controller Type: **Discrete PID**
-- Anti-windup: Integral clamping
-- Actuator limits: \( u \in [0, 1] \)
-- Performance evaluated using 2% settling band
+- Sampling time: **Ts = 10 ms** (embedded-friendly deterministic loop)
+- Drag term: `k_d * v * |v|` (nonlinear)
+- Anti-windup: integral clamping to prevent integrator runaway under saturation
+- Performance metrics (computed in `sim/metrics.py`):
+  - Overshoot (%)
+  - Settling time (2% band)
+  - Steady-state error (m)
   
 ## Keywords
 
