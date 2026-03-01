@@ -1,0 +1,3 @@
+Overshoot: 44.96 %
+Settling Time: NaN s
+Steady-State Error: 2.4377 m
