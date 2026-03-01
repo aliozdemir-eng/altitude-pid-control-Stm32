@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from sim.plant import VerticalPlant
 from sim.controller import PIDController
 from sim.sensor import AltitudeSensor
+from sim.metrics import step_metrics
 
 def run_simulation():
 
@@ -54,7 +55,15 @@ def run_simulation():
         h_meas_log.append(h_meas)
         u_log.append(u)
         e_log.append(e)
+        
+        # --- Performance Metrics ---
+    results = step_metrics(t, h_set, np.array(h_log))
 
+    print("\n--- Step Response Performance ---")
+    print(f"Overshoot: {results['overshoot']:.2f} %")
+    print(f"Settling Time: {results['settling_time']:.2f} s")
+    print(f"Steady-State Error: {results['sse']:.4f} m")
+    
     # --- Plot ---
     plt.figure(figsize=(10, 8))
 
