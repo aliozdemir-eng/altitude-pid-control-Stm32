@@ -152,7 +152,7 @@ Key performance metrics are provided in `results/metrics.txt`.
 
 The figure below shows the closed-loop altitude response obtained from MATLAB validation.
 
-![Closed-Loop Response](results/closed_loop_response.png)
+![Closed-Loop Response](results/closed_loop_pid_validation.png)
 
 Step response metrics can be found in:
 `results/metrics.txt`
