@@ -189,6 +189,82 @@ The simulation automatically computes:
 
 Metrics are calculated in `sim/metrics.py` and printed to console during simulation.
 
+---
+
+## System Mathematical Model
+
+The vertical motion dynamics are modeled as:
+
+\[
+\dot{h} = v
+\]
+
+\[
+\dot{v} = k_u u - g - k_d v |v|
+\]
+
+Where:
+
+- \( h \) → altitude (m)  
+- \( v \) → vertical velocity (m/s)  
+- \( u \) → normalized thrust input  
+- \( g \) → gravitational acceleration (9.81 m/s²)  
+- \( k_u \) → thrust gain  
+- \( k_d \) → nonlinear aerodynamic drag coefficient  
+
+The controller operates in discrete-time:
+
+\[
+u[k] = K_p e[k] + K_i \sum e[k]T_s + K_d \frac{e[k] - e[k-1]}{T_s} + u_{ff}
+\]
+
+with:
+
+- Integral anti-windup clamping  
+- Output saturation limits  
+- Gravity feedforward compensation  
+
+---
+
+## Closed-Loop Architecture
+
+```text
+        +-------------+
+        |  Setpoint   |
+        +------+------+ 
+               |
+               v
+        +-------------+
+        |   PID       |
+        | Controller  |
+        +------+------+ 
+               |
+               v
+        +-------------+
+        |   Plant     |
+        | Vertical    |
+        | Dynamics    |
+        +------+------+ 
+               |
+               v
+        +-------------+
+        |   Sensor    |
+        | Noise + LPF |
+        +------+------+ 
+               |
+               +-------------------- feedback -------------------+
+```
+
+---
+
+## Control Design Notes
+
+- Sampling Time: **Ts = 10 ms**
+- Controller Type: **Discrete PID**
+- Anti-windup: Integral clamping
+- Actuator limits: \( u \in [0, 1] \)
+- Performance evaluated using 2% settling band
+  
 ## Keywords
 
 Closed-Loop Control  
